@@ -1,6 +1,6 @@
-[submodule ".vim/autoload/vim-plug"]
+[submodule "vim-plug"]
 	path = .vim/autoload/vim-plug
 	url = https://github.com/junegunn/vim-plug
-[submodule ".vim/colors/tomorrow-theme"]
+[submodule "tomorrow-theme"]
 	path = .vim/colors/tomorrow-theme
 	url = https://github.com/chriskempson/tomorrow-theme
