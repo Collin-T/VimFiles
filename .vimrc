@@ -107,6 +107,8 @@ if has('nvim')
 
 	Plug 'rhysd/vim-clang-format'
 
+	Plug 'xuhdev/vim-latex-live-preview'
+
 	call plug#end()
 
 "Plugin Options
@@ -189,6 +191,9 @@ if has('nvim')
 
 	"vim-grammarous
 		nmap <leader>g <Plug>(grammarous-move-to-info-window)
+
+	"vim-latex-live-preview
+		let g:livepreview_cursorhold_recompile = 0
 
 	"Vim Multiple Cursors
 		nmap <leader>f :MultipleCursorsFind 
