@@ -107,7 +107,7 @@ if has('nvim')
 
 	Plug 'rhysd/vim-clang-format'
 
-	Plug 'xuhdev/vim-latex-live-preview'
+	Plug 'lervag/vimtex'
 
 	call plug#end()
 
@@ -166,6 +166,23 @@ if has('nvim')
 
 		autocmd CompleteDone * call NCM2ExpandCompletionIfSnippet()
 
+		au User Ncm2Plugin call ncm2#register_source({
+					\ 'name' : 'vimtex',
+					\ 'priority': 1,
+					\ 'subscope_enable': 1,
+					\ 'complete_length': 1,
+					\ 'scope': ['tex'],
+					\ 'matcher': {'name': 'combine',
+					\           'matchers': [
+					\               {'name': 'abbrfuzzy', 'key': 'menu'},
+					\               {'name': 'prefix', 'key': 'word'},
+					\           ]},
+					\ 'mark': 'tex',
+					\ 'word_pattern': '\w+',
+					\ 'complete_pattern': g:vimtex#re#ncm,
+					\ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+					\ })
+
 	"NERDTree
 		"Open and toggle tree
 		nnoremap <leader>n :NERDTreeFocus<CR>
@@ -191,9 +208,6 @@ if has('nvim')
 
 	"vim-grammarous
 		nmap <leader>g <Plug>(grammarous-move-to-info-window)
-
-	"vim-latex-live-preview
-		let g:livepreview_cursorhold_recompile = 0
 
 	"Vim Multiple Cursors
 		nmap <leader>f :MultipleCursorsFind 
