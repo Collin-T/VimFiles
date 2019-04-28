@@ -70,7 +70,11 @@ if has('nvim')
 "Manage plugins
 	call plug#begin()
 
+	Plug 'vim-scripts/dbext.vim'
+
 	Plug 'tikhomirov/vim-glsl'
+	Plug 'shmup/vim-sql-syntax'
+
 
 	Plug 'rhysd/vim-grammarous'
 
@@ -95,7 +99,6 @@ if has('nvim')
 	Plug 'tpope/vim-commentary'
 	Plug 'tpope/vim-surround'
 
-	Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 	Plug 'junegunn/fzf.vim'
 
 	Plug 'itchyny/lightline.vim'
@@ -112,6 +115,9 @@ if has('nvim')
 	call plug#end()
 
 "Plugin Options
+	"dbext
+		let g:dbext_default_profile = 'psql'
+		
 	"Fzf 
 		"file search bound to control p (out of familiarity
 		nnoremap <C-P> :Files<CR>
