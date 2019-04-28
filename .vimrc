@@ -1,9 +1,9 @@
 "Basic graphics
 	"Enable language specific functionality. Could also be put in general
-	syntax on
 	filetype on
-	filetype indent on
 	filetype plugin on
+	filetype indent on
+	syntax on
 
 	set nohlsearch
 	"Theme
@@ -116,6 +116,7 @@ if has('nvim')
 
 "Plugin Options
 	"dbext
+		let g:dbext_default_profile_psql = 'type=PGSQL:dbname=project:user=postgres'
 		let g:dbext_default_profile = 'psql'
 		
 	"Fzf 
