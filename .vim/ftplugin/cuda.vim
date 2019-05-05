@@ -6,4 +6,5 @@ setlocal cindent
 setlocal expandtab
 setlocal fileformat=unix
 
-setlocal foldmethod=syntax
+setlocal foldmethod=marker
+setlocal foldmarker={,}
