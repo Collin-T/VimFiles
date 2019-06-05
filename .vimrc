@@ -70,6 +70,10 @@ if has('nvim')
 "Manage plugins
 	call plug#begin()
 
+	Plug 'editorconfig/editorconfig-vim'
+
+	Plug 'vim-vdebug/vdebug'
+
 	Plug 'vim-scripts/dbext.vim'
 
 	Plug 'tikhomirov/vim-glsl'
@@ -80,16 +84,7 @@ if has('nvim')
 
 	Plug 'scrooloose/nerdtree'
 
-	Plug 'autozimu/LanguageClient-neovim', {
-	    \ 'branch': 'next',
-	    \ 'do': './install.sh',
-	    \ }
-
-	Plug 'roxma/nvim-yarp'
-	Plug 'ncm2/ncm2'
-	Plug 'ncm2/ncm2-neosnippet'
-	Plug 'ncm2/ncm2-bufword'
-	Plug 'ncm2/ncm2-path'
+	Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
 
 	Plug 'junegunn/vim-easy-align'
 
@@ -115,7 +110,43 @@ if has('nvim')
 	call plug#end()
 
 "Plugin Options
+	"coc
+		" Use `[c` and `]c` to navigate diagnostics
+		nmap <silent> [c <Plug>(coc-diagnostic-prev)
+		nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+		" Remap keys for gotos
+		nmap <silent> gd <Plug>(coc-definition)
+		nmap <silent> gy <Plug>(coc-type-definition)
+		nmap <silent> gi <Plug>(coc-implementation)
+		nmap <silent> gr <Plug>(coc-references)
+
+		" Use K to show documentation in preview window
+		nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+		function! s:show_documentation()
+			if (index(['vim','help'], &filetype) >= 0)
+				execute 'h '.expand('<cword>')
+			else
+				call CocAction('doHover')
+			endif
+		endfunction	
+
+		nmap <leader>rn <Plug>(coc-rename)
+
+		xmap <leader>f  <Plug>(coc-format-selected)
+		nmap <leader>f  <Plug>(coc-format-selected)
+
+		xmap <leader>a  <Plug>(coc-codeaction-selected)
+		nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+		" Remap for do codeAction of current line
+		nmap <leader>ca  <Plug>(coc-codeaction)
+		" Fix autofix problem of current line
+		nmap <leader>qf  <Plug>(coc-fix-current)
+
 	"dbext
+		let g:dbext_default_profile_psql = 'type=PGSQL:dbname=project:user=postgres'
 		let g:dbext_default_profile = 'psql'
 		
 	"Fzf 
@@ -123,71 +154,6 @@ if has('nvim')
 		nnoremap <C-P> :Files<CR>
 		"buffer search bound to ~
 		nnoremap ~ :Buffers<CR>
-
-	"LanguageClient
-		"Load context menu with F5
-		nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-		nnoremap <F4> :call LanguageClient#textDocument_definition({'gotoCmd': 'split'})<CR>
-		nnoremap K :call LanguageClient#textDocument_hover()<CR>
-
-		"Language server commands
-		let g:LanguageClient_serverCommands = {
-					\'c':          ['ccls', '--log-file=/tmp/ccls.log'],
-					\'cpp':        ['ccls', '--log-file=/tmp/ccls.log'],
-					\'cuda':        ['ccls', '--log-file=/tmp/ccls.log'],
-					\'javascript': ['javascript-typescript-stdio'],
-					\'python':     ['pyls']}
-		
-		let g:LanguageClient_loadSettings = 1 
-
-		set completefunc=LanguageClient#complete
-
-		set formatexpr=LanguageClient#textDocument_rangeFormatting_sync()
-		let g:LanguageClient_windowLogMessageLevel = "Info"
-
-		let g:LanguageClient_autoStart = 1
-		augroup LanguageClient_sign_column
-			autocmd!
-			autocmd FileType c,cpp,python,javascript setlocal signcolumn=yes
-		augroup END
-
-		let g:LanguageClient_useVirtualText = 0
-
-	"Lightline
-
-	"NCM2
-		autocmd BufEnter * call ncm2#enable_for_buffer()
-		set completeopt=noinsert,menuone,noselect
-
-		let g:ncm2#auto_popup = 0
-		inoremap <c-a> <c-r>=ncm2#manual_trigger()<cr>
-
-		function! NCM2ExpandCompletionIfSnippet()
-			if ncm2_neosnippet#completed_is_snippet()
-				call feedkeys("\<Plug>(ncm2_neosnippet_expand_completed)", "im")
-				return ''
-			endif
-			return ''
-		endfunction
-
-		autocmd CompleteDone * call NCM2ExpandCompletionIfSnippet()
-
-		au User Ncm2Plugin call ncm2#register_source({
-					\ 'name' : 'vimtex',
-					\ 'priority': 1,
-					\ 'subscope_enable': 1,
-					\ 'complete_length': 1,
-					\ 'scope': ['tex'],
-					\ 'matcher': {'name': 'combine',
-					\           'matchers': [
-					\               {'name': 'abbrfuzzy', 'key': 'menu'},
-					\               {'name': 'prefix', 'key': 'word'},
-					\           ]},
-					\ 'mark': 'tex',
-					\ 'word_pattern': '\w+',
-					\ 'complete_pattern': g:vimtex#re#ncm,
-					\ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-					\ })
 
 	"NERDTree
 		"Open and toggle tree
