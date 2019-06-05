@@ -1,9 +1,9 @@
 "Basic graphics
 	"Enable language specific functionality. Could also be put in general
-	syntax on
 	filetype on
-	filetype indent on
 	filetype plugin on
+	filetype indent on
+	syntax on
 
 	set nohlsearch
 	"Theme
