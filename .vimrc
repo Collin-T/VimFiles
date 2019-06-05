@@ -31,6 +31,10 @@
 	set hidden
 	set history=100
 
+	" Resize buffer easier
+	nmap ! <c-w><
+	nmap # <c-w>>
+
 	"Map ` to common macro
 	"This may very well be my favorite modification
 	vnoremap ` :norm @q<cr>
@@ -144,10 +148,6 @@ if has('nvim')
 		nmap <leader>ca  <Plug>(coc-codeaction)
 		" Fix autofix problem of current line
 		nmap <leader>qf  <Plug>(coc-fix-current)
-
-	"dbext
-		let g:dbext_default_profile_psql = 'type=PGSQL:dbname=project:user=postgres'
-		let g:dbext_default_profile = 'psql'
 		
 	"Fzf 
 		"file search bound to control p (out of familiarity
@@ -163,9 +163,6 @@ if has('nvim')
 		let NERDTreeShowHidden=1
 
 	"neosnippet
-		if has('conceal')
-		  set conceallevel=2 concealcursor=niv
-		endif
 		let g:neosnippet#expand_word_boundary = 1
 		imap <c-j> <Plug>(neosnippet_expand_or_jump)
 		smap <c-j> <Plug>(neosnippet_expand_or_jump)
