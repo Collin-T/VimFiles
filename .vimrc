@@ -31,7 +31,18 @@
 	set hidden
 	set history=100
 
-	" Resize buffer easier
+	nmap <F1> <nop>
+
+	if executable("rg")
+		set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+	endif
+	
+	" The only thing keeping me sane
+	" greps the entire project for the word under the cursor
+	" it's not intellisense, but it works. mostly
+	nmap & "xyiw:Rg x
+
+	" Resize buffer easily
 	nmap ! <c-w><
 	nmap # <c-w>>
 
@@ -58,6 +69,7 @@
 	nnoremap <C-L> <C-W><C-L>
 
 	map <S-Del> <Del>
+	imap <S-Del> <Del>
 
 	"Quickly reload vimrc
 	map <leader>s :source ~/.vimrc<CR>
@@ -74,6 +86,10 @@ if has('nvim')
 "Manage plugins
 	call plug#begin()
 
+	Plug 'christoomey/vim-tmux-navigator'
+
+	Plug 'jaxbot/browserlink.vim'
+
 	Plug 'editorconfig/editorconfig-vim'
 
 	Plug 'vim-vdebug/vdebug'
@@ -82,6 +98,8 @@ if has('nvim')
 
 	Plug 'tikhomirov/vim-glsl'
 	Plug 'shmup/vim-sql-syntax'
+	"Optional, just quality of life
+	Plug 'pangloss/vim-javascript'
 
 
 	Plug 'rhysd/vim-grammarous'
@@ -97,6 +115,7 @@ if has('nvim')
 
 	Plug 'tpope/vim-commentary'
 	Plug 'tpope/vim-surround'
+	Plug 'tpope/vim-repeat'
 
 	Plug 'junegunn/fzf.vim'
 
@@ -106,8 +125,6 @@ if has('nvim')
 
 	Plug 'Shougo/neosnippet'
 	Plug 'Shougo/neosnippet-snippets'
-
-	Plug 'rhysd/vim-clang-format'
 
 	Plug 'lervag/vimtex'
 
@@ -167,9 +184,6 @@ if has('nvim')
 		imap <c-j> <Plug>(neosnippet_expand_or_jump)
 		smap <c-j> <Plug>(neosnippet_expand_or_jump)
 		xmap <c-j> <Plug>(neosnippet_expand_target)
-
-	"vim-clang-format
-		vnoremap <leader>z :ClangFormat<CR>
 
 	"vim-easy-align
 		xmap ga <Plug>(EasyAlign)
