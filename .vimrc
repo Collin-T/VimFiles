@@ -14,15 +14,25 @@
 	set number
 	set relativenumber
 
+	"Wrapping
+	set wrap
+	set linebreak
+
 	"Neovim spellbad set to red
 	hi SpellBad ctermbg=160
 
 	"Redraw screen (in case highlights stick for whatever reason)
-	nnoremap zr :syntax on<CR> 
+	nnoremap zr :syntax on<CR>
 
 	set tabstop=4 shiftwidth=4
 	set signcolumn=yes
-	
+
+	"Force spawning an alacritty terminal with neovim work correctly by
+	"sending SIGWINCH
+	if !empty($ALACRITTY_LOG)
+		autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"
+	endif
+
 
 
 
@@ -31,20 +41,25 @@
 	set hidden
 	set history=100
 
+	set nojoinspaces
+	set mouse=a
+
+	" Go back (to previous file) with gb
+	nnoremap gb <c-^>
+
 	nmap <F1> <nop>
+	imap <F1> <nop>
+	nmap Q <nop>
 
 	if executable("rg")
 		set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 	endif
-	
-	" The only thing keeping me sane
-	" greps the entire project for the word under the cursor
-	" it's not intellisense, but it works. mostly
-	nmap & "xyiw:Rg x
 
 	" Resize buffer easily
-	nmap ! <c-w><
-	nmap # <c-w>>
+	nnoremap g! !
+	nnoremap ! <c-w><
+	nnoremap g# #
+	nnoremap # <c-w>>
 
 	"Map ` to common macro
 	"This may very well be my favorite modification
@@ -52,7 +67,7 @@
 	nnoremap ` @q
 
 	"Encode using utf8
-	set encoding=utf8
+	set encoding=utf-8
 
 	"Indentation
 	set autoindent
@@ -75,8 +90,8 @@
 	map <leader>s :source ~/.vimrc<CR>
 
 	"Set python executable for neoivm
-	let g:python_host_prog = '/usr/bin/python2'
-	let g:python3_host_prog = '/usr/bin/python3'
+	let g:python_host_prog = 'python2'
+	let g:python3_host_prog = 'python3'
 
 "Plugins
 "Only load basic plugins in vim, and load the rest in neovim
@@ -86,31 +101,29 @@ if has('nvim')
 "Manage plugins
 	call plug#begin()
 
+	" Plug 'kbenzie/vim-spirv'
+
 	Plug 'christoomey/vim-tmux-navigator'
 
-	Plug 'jaxbot/browserlink.vim'
+	Plug 'jeetsukumaran/vim-indentwise'
 
 	Plug 'editorconfig/editorconfig-vim'
 
-	Plug 'vim-vdebug/vdebug'
-
-	Plug 'vim-scripts/dbext.vim'
-
-	Plug 'tikhomirov/vim-glsl'
-	Plug 'shmup/vim-sql-syntax'
+	" Plug 'shmup/vim-sql-syntax'
+	" Plug 'petRUShka/vim-opencl'
 	"Optional, just quality of life
-	Plug 'pangloss/vim-javascript'
-
+	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 	Plug 'rhysd/vim-grammarous'
 
 	Plug 'scrooloose/nerdtree'
 
-	Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
+	Plug 'neoclide/coc.nvim', {'branch': 'release'}
+	Plug 'puremourning/vimspector'
 
 	Plug 'junegunn/vim-easy-align'
 
-	Plug 'terryma/vim-multiple-cursors'
+	" Plug 'terryma/vim-multiple-cursors'
 	Plug 'honza/vim-snippets'
 
 	Plug 'tpope/vim-commentary'
@@ -126,8 +139,6 @@ if has('nvim')
 	Plug 'Shougo/neosnippet'
 	Plug 'Shougo/neosnippet-snippets'
 
-	Plug 'lervag/vimtex'
-
 	call plug#end()
 
 "Plugin Options
@@ -138,6 +149,7 @@ if has('nvim')
 
 		" Remap keys for gotos
 		nmap <silent> gd <Plug>(coc-definition)
+		nmap <silent> gD :sp<CR><Plug>(coc-definition)
 		nmap <silent> gy <Plug>(coc-type-definition)
 		nmap <silent> gi <Plug>(coc-implementation)
 		nmap <silent> gr <Plug>(coc-references)
@@ -151,7 +163,7 @@ if has('nvim')
 			else
 				call CocAction('doHover')
 			endif
-		endfunction	
+		endfunction
 
 		nmap <leader>rn <Plug>(coc-rename)
 
@@ -165,25 +177,55 @@ if has('nvim')
 		nmap <leader>ca  <Plug>(coc-codeaction)
 		" Fix autofix problem of current line
 		nmap <leader>qf  <Plug>(coc-fix-current)
-		
-	"Fzf 
+
+	"Fzf
 		"file search bound to control p (out of familiarity
 		nnoremap <C-P> :Files<CR>
 		"buffer search bound to ~
 		nnoremap ~ :Buffers<CR>
+
+		" Fix common typo (otherwise :W gives :Windows from fzf.vim)
+		command! W write
+
+		" The only thing keeping me sane
+		" greps the entire project for the word under the cursor
+		" it's not intellisense, but it works. mostly
+		nmap & :Rg <C-R>=expand("<cword>")<CR><CR>
 
 	"NERDTree
 		"Open and toggle tree
 		nnoremap <leader>n :NERDTreeFocus<CR>
 		nnoremap <leader><S-n> :NERDTreeToggle<CR>
 
+		let NERDTreeMinimalUI=1
 		let NERDTreeShowHidden=1
 
 	"neosnippet
 		let g:neosnippet#expand_word_boundary = 1
+		let g:neosnippet#snippets_directory = "~/.vim/plugged/neosnippet-snippets/neosnippets"
 		imap <c-j> <Plug>(neosnippet_expand_or_jump)
 		smap <c-j> <Plug>(neosnippet_expand_or_jump)
 		xmap <c-j> <Plug>(neosnippet_expand_target)
+
+	"Nvim-R
+		let R_assign = 0
+
+	"nvim-treesitter
+		let g:tex_flavor = 'latex'
+		let g:tex_noindent_env = 'document\|verbatim\|enumerate\|itemize\|lstlisting\|frame'
+		let g:tex_indent_items = 0
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "c", "cpp", "elixir", "python", "latex", "javascript", "toml", "glsl" },
+  highlight = {
+    enable = true,
+  },
+  indent = {
+    enable = false
+  }
+}
+EOF
 
 	"vim-easy-align
 		xmap ga <Plug>(EasyAlign)
@@ -191,16 +233,21 @@ if has('nvim')
 
 	"vim-grammarous
 		nmap <leader>g <Plug>(grammarous-move-to-info-window)
+		let g:grammarous#languagetool_cmd = 'languagetool'
+		command! -range Gr GrammarousCheck
 
 	"Vim Multiple Cursors
-		nmap <leader>f :MultipleCursorsFind 
+		nmap <leader>f :MultipleCursorsFind
 		let g:multi_cursor_exit_from_insert_mode = 0
 		let g:multi_cursor_exit_from_visual_mode = 0
-	
+
 	"Vim-plug
 		"Install and update
 		map <leader>i :PlugInstall<CR>
 		map <leader>c :PlugClean<CR>
 		map <leader>u :PlugUpdate<CR>
+
+	"Vimspector
+		let g:vimspector_enable_mappings = "HUMAN"
 
 endif
